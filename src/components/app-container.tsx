@@ -1,21 +1,35 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   useQuery,
   useMutation,
   useQueryClient,
   QueryClient,
   QueryClientProvider,
-} from 'react-query'
-import { Home } from '../pages/home'
+} from 'react-query';
+import { Outlet } from 'react-router-dom';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
+
+const Container: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  return (
+    <div
+      className={
+        'w-screen h-screen flex bg-background justify-center items-center'
+      }
+    >
+      {children}
+    </div>
+  );
+};
 
 export function AppContainer() {
-
   return (
     <QueryClientProvider client={queryClient}>
-      <Home />
+      <Container>
+        <Outlet />
+      </Container>
     </QueryClientProvider>
-  )
+  );
 }
-

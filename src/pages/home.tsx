@@ -1,48 +1,46 @@
-import { useEffect } from 'react'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { getHabits } from '../services/api'
-import { useStore } from '../store/useStore'
+import { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { Dialog } from '../components/dialog';
+import { getHabits } from '../services/api';
+import { useStore } from '../store/useStore';
 
 export function Home() {
-  const {data, isLoading, isError} = useQuery('habits', getHabits)
+  const { data, isLoading, isError } = useQuery('habits', getHabits);
 
-  const {setError,setHabits,setLoading} = useStore(
-    (state) => ({
-      setLoading: state.setLoadingHabits,
-      setError: state.setErrorHabits,
-      setHabits: state.setHabits
-    })
-  )
+  const { setError, setHabits, setLoading } = useStore((state) => ({
+    setLoading: state.setLoadingHabits,
+    setError: state.setErrorHabits,
+    setHabits: state.setHabits,
+  }));
 
   useEffect(() => {
-    setLoading(isLoading)
-    setError(isError)
-    setHabits(data ?? [])
-  }, [data, isLoading, isError])
+    setLoading(isLoading);
+    setError(isError);
+    setHabits(data ?? []);
+  }, [data, isLoading, isError]);
 
-  if(isError) {
-    return (
-      <div className={'w-screen h-screen flex items-center justify-center gap-2 bg-zinc-800'}>
-        <div className={'text-xl text-violet-600 font-bold'}>Error</div>
-      </div>
-    )
-  }
+  const [isOpen, setIsOpen] = useState(false);
 
-  if(isLoading) {
-    return (
-      <div className={'w-screen h-screen flex items-center justify-center gap-2 bg-zinc-800'}>
-        <div className={'text-xl text-violet-600 font-bold'}>Loading...</div>
-      </div>
-    )
-  }
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const handleOpen = useCallback(() => {
+    setIsOpen(true);
+  }, []);
 
   return (
-    <div className={'w-screen h-screen flex items-center justify-center gap-2 bg-zinc-800'}>
-      <div className={'flex gap-2 '}>
-        {data?.map((habit) => (
-          <div key={habit.id} className='p-4 rounded-lg flex justify-center items-center bg-violet-600' />
-        ))}
-      </div>
+    <div className={'flex flex-col gap-3 items-center'}>
+      <h1 className={'text-3xl text-white'}>Home</h1>
+      <button
+        className={'text-xl text-white font-bold bg-violet-500 p-3 rounded-lg'}
+        onClick={handleOpen}
+      >
+        toggle dialog
+      </button>
+      <Dialog isOpen={isOpen} onClose={handleClose}>
+        <h1 className={'text-3xl text-white'}>Dialog</h1>
+      </Dialog>
     </div>
-  )
+  );
 }
