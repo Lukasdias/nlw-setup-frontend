@@ -1,5 +1,7 @@
 # NLW - Setup for Next Level Week
 
+![](Cover.png)
+
 - Neste repositório você encontrará o código do frontend web da aplicação _Habits_ desenvolvida durante a primeira Next Level Week da Rocketseat de 2023.
 
 - O projeto foi desenvolvido utilizando ReactJS, Typescript, TailwindCSS, Zustand, Axios, React Router Dom, HeadlessUI, React Query, immer e React Spring.
