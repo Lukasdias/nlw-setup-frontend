@@ -24,9 +24,9 @@ yarn dev
 
 ## Adições
 
-- [x] Adicionado o modo dark
-- [] Adicionado o modo light
-- [] Animar os botões de dia
-- [] Adicionar o modo de edição de hábitos
-- [] Adicionar o modo de exclusão de hábitos
-- [] Adicionar autenticação
+- [xx] Adicionado o modo dark
+- [x] Adicionado o modo light
+- [x] Animar os botões de dia
+- [x] Adicionar o modo de edição de hábitos
+- [x] Adicionar o modo de exclusão de hábitos
+- [x] Adicionar autenticação
