@@ -16,7 +16,7 @@ const Container: React.FC<{
   return (
     <div
       className={
-        'w-screen h-screen flex bg-background justify-center items-center'
+        'w-screen h-screen flex bg-background justify-center items-center overflow-hidden'
       }
     >
       {children}
