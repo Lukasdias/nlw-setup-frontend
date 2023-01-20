@@ -1,4 +1,4 @@
-# NLW - Setup for Next Level Week
+# NLW - Setup
 
 ![](Cover.png)
 
