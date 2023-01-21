@@ -1,36 +1,64 @@
 import { SpringValue, useSpringValue, animated } from '@react-spring/web';
 import dayjs from 'dayjs';
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { generateRangeDatesFromYearStart } from '../utils/generate-range-between-days';
 
+type TableNodes = {
+  value: Date | null;
+};
+
 const headers = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
+const availableDates = generateRangeDatesFromYearStart();
+
+const minimumDateRange = 18 * 7; // 18 semanas
+
+const amountOfDatesToFill = minimumDateRange - availableDates.length;
+
+const data: TableNodes[] = Array.from({ length: amountOfDatesToFill }).map(
+  (_, idx: number) => ({
+    value: idx <= availableDates.length ? availableDates[idx] : null,
+  })
+);
 
 const TableRow: React.FC<{
   progress: SpringValue<number>;
-  data: Date[];
-}> = memo(({ data, progress }) => {
-  const setSelectDate = useStore((state) => state.setSelectedDate);
-  const setIsEditHabitModalOpen = useStore(
-    (state) => state.setIsEditHabitModalOpen
+  elements: TableNodes[];
+}> = memo(({ elements, progress }) => {
+  const { setSelectedDate, setIsEditHabitModalOpen } = useStore(
+    useCallback(
+      (state) => ({
+        setSelectedDate: state.setSelectedDate,
+        setIsEditHabitModalOpen: state.setIsEditHabitModalOpen,
+      }),
+      []
+    )
   );
 
   useEffect(() => {
-    progress.start(1);
+    progress.start({
+      to: 1,
+      delay: 250,
+    });
   }, []);
 
   return (
-    <div className={'w-full flex gap-2'}>
-      {data.map((date) => (
+    <div className={'grid grid-rows-7 grid-flow-col gap-3'}>
+      {elements?.map((d) => (
         <animated.div
+          key={d?.value?.toString()}
           style={{
             transform: progress.to((v) => `scale(${v})`),
           }}
-          className={
-            'w-10 h-10 flex justify-center items-center bg-violet-700 rounded-lg font-bold cursor-pointer hover:bg-violet-600 transition-colors duration-200'
-          }
+          className={`w-10 h-10 flex justify-center items-center  rounded-lg font-bold cursor-pointer transition-colors duration-200 ${
+            !d.value
+              ? 'bg-transparent border-2 border-zinc-700 cursor-not-allowed'
+              : 'bg-violet-700 hover:bg-violet-300'
+          }`}
           onClick={() => {
-            setSelectDate(date);
+            if (!d.value) return;
+            setSelectedDate(d?.value);
             setIsEditHabitModalOpen(true);
           }}
         />
@@ -40,8 +68,6 @@ const TableRow: React.FC<{
 });
 
 export const Table = memo(() => {
-  const data = generateRangeDatesFromYearStart();
-
   const progress = useSpringValue(0, {
     delay: 250,
     config: {
@@ -50,43 +76,12 @@ export const Table = memo(() => {
     },
   });
 
-  const domingos = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 0);
-  }, [data]);
-
-  const segundas = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 1);
-  }, [data]);
-
-  const tercas = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 2);
-  }, [data]);
-
-  const quartas = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 3);
-  }, [data]);
-
-  const quintas = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 4);
-  }, [data]);
-
-  const sextas = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 5);
-  }, [data]);
-
-  const sabados = useMemo(() => {
-    return data.filter((d) => dayjs(d).day() === 6);
-  }, [data]);
-
-  const setSelectDate = useStore((state) => state.setSelectedDate);
-  const setIsEditHabitModalOpen = useStore(
-    (state) => state.setIsEditHabitModalOpen
-  );
   return (
-    <div className={'flex w-full max-w-5xl overflow-x-auto gap-3'}>
-      <div className={'flex flex-col gap-3'}>
-        {headers.map((header) => (
+    <div className={'w-full flex gap-2 items-center justify-center'}>
+      <div className={'grid grid-rows-7 grid-flow-row gap-3'}>
+        {headers.map((header, idx) => (
           <span
+            key={idx}
             className={
               'w-10 h-10 flex justify-center items-center text-zinc-400 font-bold'
             }
@@ -95,15 +90,7 @@ export const Table = memo(() => {
           </span>
         ))}
       </div>
-      <div className={'flex flex-col gap-3'}>
-        <TableRow progress={progress} data={domingos} />
-        <TableRow progress={progress} data={segundas} />
-        <TableRow progress={progress} data={tercas} />
-        <TableRow progress={progress} data={quartas} />
-        <TableRow progress={progress} data={quintas} />
-        <TableRow progress={progress} data={sextas} />
-        <TableRow progress={progress} data={sabados} />
-      </div>
+      <TableRow progress={progress} elements={data} />
     </div>
   );
 });

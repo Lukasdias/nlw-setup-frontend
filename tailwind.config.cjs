@@ -12,6 +12,9 @@ module.exports = {
       serif: ['Inter', 'serif'],
       mono: ['Inter', 'monospace'],
     },
+    gridTemplateRows: {
+      7: 'repeat(7, minmax(0, 1fr))',
+    },
   },
   plugins: [],
 };

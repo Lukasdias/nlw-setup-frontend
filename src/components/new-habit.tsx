@@ -1,5 +1,5 @@
 import { X } from 'phosphor-react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from '../store/useStore';
 import { Button } from './button';
 import { Checkbox } from './checkbox';
@@ -16,8 +16,15 @@ const weekDays = [
 ];
 
 export const NewHabit = memo(({ ...props }) => {
-  const isOpen = useStore((state) => state.isNewHabitModalOpen);
-  const setIsOpen = useStore((state) => state.setIsNewHabitModalOpen);
+  const { isOpen, setIsOpen } = useStore(
+    useCallback(
+      (state) => ({
+        isOpen: state.isNewHabitModalOpen,
+        setIsOpen: state.setIsNewHabitModalOpen,
+      }),
+      []
+    )
+  );
 
   const [weekDaysSelected, setWeekDaysSelected] = useState<number[]>([]);
 

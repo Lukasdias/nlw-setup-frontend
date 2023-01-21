@@ -13,19 +13,19 @@ import { useSpring, animated } from '@react-spring/web';
 import { Table } from '../components/table';
 
 export function Home() {
-  const { data, isLoading, isError } = useQuery('habits', getHabits);
+  // const { data, isLoading, isError } = useQuery('habits', getHabits);
 
-  const { setError, setHabits, setLoading } = useStore((state) => ({
-    setLoading: state.setLoadingHabits,
-    setError: state.setErrorHabits,
-    setHabits: state.setHabits,
-  }));
+  // const { setError, setHabits, setLoading } = useStore((state) => ({
+  //   setLoading: state.setLoadingHabits,
+  //   setError: state.setErrorHabits,
+  //   setHabits: state.setHabits,
+  // }));
 
-  useEffect(() => {
-    setLoading(isLoading);
-    setError(isError);
-    setHabits(data ?? []);
-  }, [data, isLoading, isError]);
+  // useEffect(() => {
+  //   setLoading(isLoading);
+  //   setError(isError);
+  //   setHabits(data ?? []);
+  // }, [data, isLoading, isError]);
 
   const [spring, api] = useSpring(() => ({
     from: { opacity: 0, transform: 'translateY(100%)' },
@@ -35,10 +35,16 @@ export function Home() {
   return (
     <animated.div
       style={spring}
-      className={'flex flex-1 flex-col gap-[70px] items-center justify-center'}
+      className={'flex flex-1 flex-col items-center justify-center'}
     >
-      <Header />
-      <Table />
+      <div
+        className={
+          'flex flex-col w-full max-w-5xl overflow-x-auto gap-[70px] items-center justify-center'
+        }
+      >
+        <Header />
+        <Table />
+      </div>
     </animated.div>
   );
 }
