@@ -35,7 +35,7 @@ export function Home() {
   return (
     <animated.div
       style={spring}
-      className={'flex flex-1 flex-col gap-3 items-center justify-center'}
+      className={'flex flex-1 flex-col gap-[70px] items-center justify-center'}
     >
       <Header />
       <Table />
