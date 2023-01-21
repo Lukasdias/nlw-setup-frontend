@@ -7,6 +7,11 @@ module.exports = {
         background: '#09090A',
       },
     },
+    fontFamily: {
+      sans: ['Inter', 'sans-serif'],
+      serif: ['Inter', 'serif'],
+      mono: ['Inter', 'monospace'],
+    },
   },
   plugins: [],
 };

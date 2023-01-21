@@ -37,29 +37,22 @@ export const Dialog: React.FC<DialogProps> = memo(({ ...props }) => {
                   onClose={props.onClose}
                   as={animated.div}
                 >
-                  <ExternalDialog.Panel
-                    onClick={props.onClose}
-                    as={animated.div}
-                  >
-                    <ExternalDialog.Overlay
-                      className={'fixed inset-0 bg-black bg-opacity-50'}
-                    />
+                  <ExternalDialog.Overlay
+                    className={'fixed inset-0 bg-black bg-opacity-50'}
+                  />
 
-                    <div
+                  <div
+                    className={'fixed inset-0 flex justify-center items-center'}
+                  >
+                    <animated.div
+                      style={style}
                       className={
-                        'fixed inset-0 flex justify-center items-center'
+                        'bg-zinc-900 p-6 flex flex-col rounded-lg min-w-[420px] min-h-[300px]'
                       }
                     >
-                      <animated.div
-                        style={style}
-                        className={
-                          'bg-zinc-900 p-6 flex flex-col rounded-lg min-w-[300px] min-h-[300px]'
-                        }
-                      >
-                        {props.children}
-                      </animated.div>
-                    </div>
-                  </ExternalDialog.Panel>
+                      {props.children}
+                    </animated.div>
+                  </div>
                 </ExternalDialog>
               </>
             )

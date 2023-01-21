@@ -7,6 +7,9 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import { Outlet } from 'react-router-dom';
+import { EditHabit } from './edit-habit';
+import { NewHabit } from './new-habit';
+import 'dayjs/locale/pt-br';
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,8 @@ export function AppContainer() {
     <QueryClientProvider client={queryClient}>
       <Container>
         <Outlet />
+        <NewHabit />
+        <EditHabit />
       </Container>
     </QueryClientProvider>
   );
