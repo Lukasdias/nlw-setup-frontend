@@ -1,17 +1,8 @@
-import { useState } from 'react';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
-import { Outlet } from 'react-router-dom';
-import { EditHabit } from './edit-habit';
-import { NewHabit } from './new-habit';
-import 'dayjs/locale/pt-br';
+import { useState } from "react";
 
-const queryClient = new QueryClient();
+import { Outlet } from "react-router-dom";
+import { NewHabit } from "./new-habit";
+import "dayjs/locale/pt-br";
 
 const Container: React.FC<{
   children: React.ReactNode;
@@ -19,7 +10,7 @@ const Container: React.FC<{
   return (
     <div
       className={
-        'w-screen h-screen flex bg-background justify-center items-center overflow-hidden'
+        "relative flex h-screen max-h-screen w-screen flex-col overflow-y-auto bg-background"
       }
     >
       {children}
@@ -29,12 +20,9 @@ const Container: React.FC<{
 
 export function AppContainer() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Container>
-        <Outlet />
-        <NewHabit />
-        <EditHabit />
-      </Container>
-    </QueryClientProvider>
+    <Container>
+      <Outlet />
+      <NewHabit />
+    </Container>
   );
 }

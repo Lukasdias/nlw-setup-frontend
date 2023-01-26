@@ -1,14 +1,17 @@
-import { SpringValue, useSpringValue, animated } from '@react-spring/web';
-import dayjs from 'dayjs';
-import { memo, useCallback, useEffect, useMemo } from 'react';
-import { useStore } from '../store/useStore';
-import { generateRangeDatesFromYearStart } from '../utils/generate-range-between-days';
+import { SpringValue, useSpringValue, animated } from "@react-spring/web";
+import clsx from "clsx";
+import dayjs from "dayjs";
+import { memo, useCallback, useEffect, useMemo } from "react";
+import { getSummary } from "../services/api";
+import { useHabitsStore } from "../store/useHabitsStore";
+import { generateRangeDatesFromYearStart } from "../utils/generate-range-between-days";
+import { EditHabitPopover } from "./edit-habit-popover";
 
 type TableNodes = {
   value: Date | null;
 };
 
-const headers = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+const headers = ["D", "S", "T", "Q", "Q", "S", "S"];
 
 const availableDates = generateRangeDatesFromYearStart();
 
@@ -26,11 +29,10 @@ const TableRow: React.FC<{
   progress: SpringValue<number>;
   elements: TableNodes[];
 }> = memo(({ elements, progress }) => {
-  const { setSelectedDate, setIsEditHabitModalOpen } = useStore(
+  const { setSelectedDate } = useHabitsStore(
     useCallback(
       (state) => ({
         setSelectedDate: state.setSelectedDate,
-        setIsEditHabitModalOpen: state.setIsEditHabitModalOpen,
       }),
       []
     )
@@ -43,25 +45,32 @@ const TableRow: React.FC<{
     });
   }, []);
 
+  const grid = clsx(window.innerWidth, {
+    "grid grid-rows-7 grid-cols-7 gap-3": window.innerWidth < 768,
+    "grid grid-rows-7 grid-flow-col gap-3": window.innerWidth >= 768,
+  });
+
   return (
-    <div className={'grid grid-rows-7 grid-flow-col gap-3'}>
+    <div
+      className={`grid grid-cols-7 grid-rows-7 gap-3 lg:grid-flow-col lg:grid-cols-1`}
+    >
       {elements?.map((d) => (
-        <animated.div
-          key={d?.value?.toString()}
-          style={{
-            transform: progress.to((v) => `scale(${v})`),
-          }}
-          className={`w-10 h-10 flex justify-center items-center  rounded-lg font-bold cursor-pointer transition-colors duration-200 ${
-            !d.value
-              ? 'bg-transparent border-2 border-zinc-700 cursor-not-allowed'
-              : 'bg-violet-700 hover:bg-violet-300'
-          }`}
-          onClick={() => {
-            if (!d.value) return;
-            setSelectedDate(d?.value);
-            setIsEditHabitModalOpen(true);
-          }}
-        />
+        <EditHabitPopover key={d?.value?.toString()} canRender={!!d?.value}>
+          <animated.div
+            style={{
+              transform: progress.to((v) => `scale(${v})`),
+            }}
+            className={`flex h-10 w-10 cursor-pointer items-center  justify-center rounded-lg font-bold transition-colors duration-200 ${
+              !d.value
+                ? "cursor-not-allowed border-2 border-zinc-700 bg-transparent"
+                : "bg-violet-700 hover:bg-violet-300"
+            }`}
+            onClick={() => {
+              if (!d.value) return;
+              setSelectedDate(d?.value);
+            }}
+          />
+        </EditHabitPopover>
       ))}
     </div>
   );
@@ -76,14 +85,25 @@ export const Table = memo(() => {
     },
   });
 
+  const grid = clsx(window.innerWidth, {
+    "grid grid-cols-7 grid-flow-row gap-3": window.innerWidth < 768,
+    "grid grid-rows-7 grid-flow-row gap-3": window.innerWidth >= 768,
+  });
+
   return (
-    <div className={'w-full flex gap-2 items-center justify-center'}>
-      <div className={'grid grid-rows-7 grid-flow-row gap-3'}>
+    <div
+      className={"flex w-full flex-col items-center justify-center lg:flex-row"}
+    >
+      <div
+        className={`
+        grid grid-flow-row grid-cols-7 gap-3 lg:grid-cols-1 lg:grid-rows-7
+      `}
+      >
         {headers.map((header, idx) => (
           <span
             key={idx}
             className={
-              'w-10 h-10 flex justify-center items-center text-zinc-400 font-bold'
+              "flex h-10 w-10 items-center justify-center font-bold text-zinc-400"
             }
           >
             {header}
